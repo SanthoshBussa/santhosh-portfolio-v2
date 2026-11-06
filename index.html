@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <script>
+    // Modern Web Guidance: FOUC prevention inline script
+    try {
+      const storedTheme = localStorage.getItem("color-scheme");
+      if (storedTheme) {
+        document.querySelector('meta[name="color-scheme"]').content = storedTheme;
+      }
+    } catch (e) {}
+  </script>
+  <title>Santhosh Bussa | Java Backend &amp; Microservices Engineer | Portfolio v2</title>
+  <meta name="description" content="Next-Gen Developer Portfolio of Santhosh Bussa — Java Full-Stack &amp; Spring Boot Microservices Engineer. Features Interactive Bento Grid, DevOS Hacker CLI, and Live REST API Simulator." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="java-icon.svg" />
+  <link rel="alternate icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Ambient Interactive Background Canvas -->
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+
+  <!-- Top Floating Dock / Header Navigation -->
+  <header class="dock-header" role="banner">
+    <div class="dock-inner">
+      <div class="brand-group">
+        <div class="avatar-ring">
+          <span class="avatar-letter">SB</span>
+          <span class="live-pulse" title="Available for hire"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Santhosh Bussa</span>
+          <span class="brand-role">Java Backend &amp; Microservices</span>
+        </div>
+      </div>
+
+      <!-- Navigation & Mode Controls -->
+      <nav class="dock-nav" aria-label="Main Navigation">
+        <button type="button" class="dock-btn active" id="btnModeBento" data-target="bento-view" title="Switch to Bento 3D Mode">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Bento GUI</span>
+        </button>
+
+        <button type="button" class="dock-btn" id="btnModeTerminal" data-target="terminal-view" title="Switch to Interactive DevOS Terminal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          <span>DevOS CLI</span>
+          <span class="badge-cli">Terminal</span>
+        </button>
+
+        <a href="#api-simulator" class="dock-btn dock-link" id="btnJumpApi" title="Jump to Spring Boot API Playground">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>REST API</span>
+        </a>
+      </nav>
+
+      <!-- System Controls: Sound, Theme, Resume -->
+      <div class="dock-actions">
+        <button type="button" class="icon-toggle" id="btnSoundToggle" aria-label="Toggle Synthesized Audio SFX" title="Audio Sound SFX">
+          <svg class="icon-sound-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <svg class="icon-sound-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+        </button>
+
+        <button type="button" class="icon-toggle" id="btnThemeToggle" aria-label="Toggle Color Theme" title="Toggle Theme (Light / Dark)">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <a href="Santhosh_Resume.pdf" download="Santhosh_Resume.pdf" class="btn-primary-glow" id="btnDownloadResume" title="Download Santhosh's Resume (PDF)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Resume</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="page-container" id="mainContent">
+
+    <!-- ======================================================== -->
+    <!-- VIEW 1: BENTO 3D SPATIAL SHOWCASE                       -->
+    <!-- ======================================================== -->
+    <div id="bentoView" class="view-panel active-view">
+
+      <!-- Hero Header Section -->
+      <section class="hero-section" aria-label="Introduction">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>ASSOCIATE SOFTWARE ENGINEER • TEST YANTRA • NOTICE: ≤15 DAYS</span>
+        </div>
+
+        <h1 class="hero-title">
+          Architecting Resilient <br class="mobile-hide"/>
+          <span class="gradient-text">Enterprise Java Systems</span> &amp; Microservices
+        </h1>
+
+        <div class="hero-typist-box">
+          <span class="typist-prefix">&gt; specializing in </span>
+          <span class="typist-text" id="typistTarget">Spring Boot 3 &amp; Distributed Microservices</span>
+          <span class="typist-cursor">_</span>
+        </div>
+
+        <p class="hero-description">
+          Results-oriented Java Engineer with 1+ years enterprise experience designing high-throughput REST APIs,
+          bulletproof JWT/RBAC security pipelines, and indexed PostgreSQL architectures. Solved 360+ algorithmic
+          challenges with optimal time-space complexity.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#projects-showcase" class="cta-btn primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <span>Explore Engineering Work</span>
+          </a>
+          <button type="button" class="cta-btn secondary" id="btnHeroOpenCli">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            <span>Launch DevOS Terminal</span>
+          </button>
+          <a href="#contact-hub" class="cta-btn ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Get in Touch</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Bento Grid Layout -->
+      <section class="bento-grid" aria-label="Engineering Bento Grid">
+
+        <!-- BENTO CARD 1: KPI IMPACT METRICS (Full Width Banner) -->
+        <article class="bento-card card-kpi-banner tilt-card" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              <span>Verified Production Impact Metrics</span>
+            </div>
+            <span class="metric-timestamp">Active Role: Test Yantra, Bengaluru</span>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-item">
+              <div class="kpi-num" data-count="20">20+</div>
+              <div class="kpi-label">RESTful APIs Engineered</div>
+              <div class="kpi-sub">Optimized for low-latency JSON delivery</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-num" data-count="20">20%</div>
+              <div class="kpi-label">Query &amp; Response Latency Cut</div>
+              <div class="kpi-sub">Via indexed JPQL &amp; Hibernate caching</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-num" data-count="99.99">99.99%</div>
+              <div class="kpi-label">Unauthorized Access Defense</div>
+              <div class="kpi-sub">Stateless JWT + RBAC authorization</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-num" data-count="360">360+</div>
+              <div class="kpi-label">DSA Problems Mastered</div>
+              <div class="kpi-sub">LeetCode &amp; GeeksforGeeks patterns</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-num" data-count="300">300+</div>
+              <div class="kpi-label">Automated Tests Executed</div>
+              <div class="kpi-sub">Postman collections &amp; JUnit verification</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 2: INTERACTIVE SPRING BOOT REST API PLAYGROUND -->
+        <article class="bento-card card-api-playground tilt-card" id="api-simulator" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill accent-cyan">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              <span>Live Spring Boot 3 REST Simulator</span>
+            </div>
+            <span class="status-indicator"><span class="dot-green"></span> 200 OK Engine</span>
+          </div>
+
+          <p class="card-summary">
+            Test simulated backend endpoints built by Santhosh directly from your browser.
+            Inspect realistic HTTP status codes, headers, response times, and payloads.
+          </p>
+
+          <div class="api-console-controls">
+            <div class="endpoint-picker">
+              <label for="apiEndpointSelect" class="sr-only">Select Endpoint</label>
+              <select id="apiEndpointSelect" class="custom-select">
+                <option value="auth-login">POST /api/v1/auth/login (JWT Auth)</option>
+                <option value="products-list">GET /api/v1/products?category=electronics&amp;page=1</option>
+                <option value="order-checkout">POST /api/v1/orders/checkout (Razorpay HMAC)</option>
+                <option value="actuator-health">GET /actuator/health (JVM &amp; Memory Metrics)</option>
+              </select>
+            </div>
+            <button type="button" class="btn-execute-api" id="btnExecuteApi">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Send Request</span>
+            </button>
+          </div>
+
+          <div class="api-output-terminal">
+            <div class="api-terminal-bar">
+              <div class="terminal-dots">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+              </div>
+              <span class="terminal-route" id="apiRouteDisplay">POST https://api.santhosh.dev/v1/auth/login</span>
+              <div class="terminal-status-wrap">
+                <span class="api-status-badge" id="apiStatusBadge">200 OK</span>
+                <span class="api-latency-badge" id="apiLatencyBadge">18ms</span>
+              </div>
+            </div>
+            <div class="api-code-wrapper">
+              <pre><code class="language-json" id="apiResponseBody">{
+  "status": "SUCCESS",
+  "code": 200,
+  "timestamp": "2026-11-06T12:00:00.000Z",
+  "data": {
+    "tokenType": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expiresIn": 86400,
+    "user": {
+      "id": "usr_9981",
+      "username": "santhosh.bussa",
+      "role": "ROLE_ADMIN",
+      "permissions": ["READ_TELEMETRY", "EXECUTE_ORDERS", "WRITE_PRODUCTS"]
+    }
+  }
+}</code></pre>
+              <button type="button" class="btn-copy-code" id="btnCopyApiOutput" title="Copy response JSON">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 3: SYSTEM ARCHITECTURE INTERACTIVE BLUEPRINT -->
+        <article class="bento-card card-architecture tilt-card" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill accent-purple">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+              <span>System Design Architecture</span>
+            </div>
+            <span class="microservices-tag">Spring Cloud Microservices</span>
+          </div>
+
+          <p class="card-summary">
+            Enterprise high-concurrency pipeline diagram. Click any node to inspect implementation design decisions.
+          </p>
+
+          <div class="architecture-diagram" id="archDiagram">
+            <div class="arch-node" data-node="gateway">
+              <div class="node-icon">🌐</div>
+              <div class="node-title">API Gateway</div>
+              <div class="node-tech">Spring Cloud Gateway</div>
+              <div class="node-sub">Routing &amp; Rate-Limiting</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-node" data-node="security">
+              <div class="node-icon">🛡️</div>
+              <div class="node-title">Auth &amp; Filter</div>
+              <div class="node-tech">Spring Security (JWT)</div>
+              <div class="node-sub">RBAC &amp; Stateless Validation</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-node" data-node="services">
+              <div class="node-icon">⚡</div>
+              <div class="node-title">Core Services</div>
+              <div class="node-tech">Orders / Telemetry / AI</div>
+              <div class="node-sub">Dockerized Microservices</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-node" data-node="database">
+              <div class="node-icon">🗄️</div>
+              <div class="node-title">Storage Tier</div>
+              <div class="node-tech">PostgreSQL + Hibernate</div>
+              <div class="node-sub">HikariCP &amp; Indexed JPQL</div>
+            </div>
+          </div>
+
+          <div class="arch-detail-box" id="archDetailBox">
+            <span class="arch-detail-title" id="archDetailTitle">Spring Cloud Gateway</span>
+            <p class="arch-detail-desc" id="archDetailDesc">
+              Handles centralized cross-cutting concerns: request routing, client IP throttling, CORS pre-flight negotiation, and non-blocking WebFlux filtering before forwarding to isolated services.
+            </p>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 4: CORE TECHNICAL COMPETENCIES (Interactive Matrix) -->
+        <article class="bento-card card-skills-matrix tilt-card" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill accent-emerald">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+              <span>Production Tech Stack</span>
+            </div>
+            <span class="matrix-filter-count">16 Production Skills</span>
+          </div>
+
+          <div class="skill-category-tabs">
+            <button type="button" class="skill-tab-btn active" data-cat="backend">Backend &amp; API</button>
+            <button type="button" class="skill-tab-btn" data-cat="data">Database &amp; ORM</button>
+            <button type="button" class="skill-tab-btn" data-cat="frontend">Frontend &amp; UI</button>
+            <button type="button" class="skill-tab-btn" data-cat="devops">DevOps &amp; Tools</button>
+          </div>
+
+          <div class="skills-chips-wrapper" id="skillsChipsContainer">
+            <!-- Dynamically populated / filtered by JS -->
+            <div class="skill-chip" data-category="backend">
+              <span class="chip-name">Java 17 / 21</span>
+              <span class="chip-exp">Core, Multithreading, Streams</span>
+            </div>
+            <div class="skill-chip" data-category="backend">
+              <span class="chip-name">Spring Boot 3</span>
+              <span class="chip-exp">Auto-config, Actuator, IoC</span>
+            </div>
+            <div class="skill-chip" data-category="backend">
+              <span class="chip-name">Spring Security (JWT)</span>
+              <span class="chip-exp">Stateless Auth, RBAC, OAuth2</span>
+            </div>
+            <div class="skill-chip" data-category="backend">
+              <span class="chip-name">Microservices</span>
+              <span class="chip-exp">Distributed Systems, Gateway</span>
+            </div>
+            <div class="skill-chip" data-category="backend">
+              <span class="chip-name">RESTful APIs</span>
+              <span class="chip-exp">Contract First, Swagger/OpenAPI</span>
+            </div>
+            <div class="skill-chip" data-category="data">
+              <span class="chip-name">PostgreSQL</span>
+              <span class="chip-exp">Indexing, Joins, Triggers</span>
+            </div>
+            <div class="skill-chip" data-category="data">
+              <span class="chip-name">Hibernate ORM</span>
+              <span class="chip-exp">Entity Relations, Caching</span>
+            </div>
+            <div class="skill-chip" data-category="data">
+              <span class="chip-name">Spring Data JPA</span>
+              <span class="chip-exp">JPQL, Criteria API, Repositories</span>
+            </div>
+            <div class="skill-chip" data-category="frontend">
+              <span class="chip-name">React 18</span>
+              <span class="chip-exp">Hooks, Context API, Dynamic SPA</span>
+            </div>
+            <div class="skill-chip" data-category="frontend">
+              <span class="chip-name">Tailwind CSS</span>
+              <span class="chip-exp">Responsive Design, Custom Tokens</span>
+            </div>
+            <div class="skill-chip" data-category="frontend">
+              <span class="chip-name">Material-UI (MUI)</span>
+              <span class="chip-exp">Component Layouts, Theming</span>
+            </div>
+            <div class="skill-chip" data-category="devops">
+              <span class="chip-name">Docker &amp; Compose</span>
+              <span class="chip-exp">Multi-stage Builds, Containerization</span>
+            </div>
+            <div class="skill-chip" data-category="devops">
+              <span class="chip-name">Postman</span>
+              <span class="chip-exp">300+ Automated Test Collections</span>
+            </div>
+            <div class="skill-chip" data-category="devops">
+              <span class="chip-name">Apache Maven</span>
+              <span class="chip-exp">Dependency Mgmt, Plugins</span>
+            </div>
+            <div class="skill-chip" data-category="devops">
+              <span class="chip-name">Git &amp; GitHub</span>
+              <span class="chip-exp">Branching, PRs, Code Reviews</span>
+            </div>
+            <div class="skill-chip" data-category="devops">
+              <span class="chip-name">Linux / Bash</span>
+              <span class="chip-exp">Shell Scripting, Server Admin</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 5: FEATURED ENGINEERING PROJECTS -->
+        <article class="bento-card card-projects-showcase tilt-card" id="projects-showcase" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill accent-amber">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+              <span>Featured Software Projects</span>
+            </div>
+            <a href="https://github.com/SanthoshBussa" target="_blank" rel="noopener noreferrer" class="link-external-profile">
+              <span>View GitHub</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+          </div>
+
+          <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-box">
+              <div class="p-box-top">
+                <span class="p-status">FLAGSHIP BACKEND + FRONTEND</span>
+                <span class="p-year">2025 – 2026</span>
+              </div>
+              <h3 class="p-title">Ecommerce Management System</h3>
+              <p class="p-desc">
+                Enterprise full-stack commerce backend built with Spring Boot 3 and React. Exposes RESTful endpoints for user auth, cart synchronization, catalog filtering, and order lifecycle management. Integrated Razorpay HMAC-SHA256 signature verification and indexed PostgreSQL JPA queries.
+              </p>
+              <div class="p-tags">
+                <span>Java 17</span>
+                <span>Spring Boot 3</span>
+                <span>Spring Security (JWT)</span>
+                <span>PostgreSQL</span>
+                <span>React</span>
+                <span>Tailwind</span>
+                <span>Razorpay</span>
+              </div>
+              <div class="p-links">
+                <a href="https://github.com/SanthoshBussa/ecommerce-management-system" target="_blank" rel="noopener noreferrer" class="p-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                  <span>Repository</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-box">
+              <div class="p-box-top">
+                <span class="p-status">MICROSERVICES ARCHITECTURE</span>
+                <span class="p-year">2026</span>
+              </div>
+              <h3 class="p-title">ISS Orbital Real-Time AI Platform</h3>
+              <p class="p-desc">
+                Distributed microservices architecture composed of Web Gateway, Telemetry Ingestion Service, Gallery Media Service, and AI Inference Service. Orchestrated with Docker Compose to ingest high-frequency satellite telemetry and render automated predictive analytics.
+              </p>
+              <div class="p-tags">
+                <span>Spring Boot</span>
+                <span>Web Gateway</span>
+                <span>Docker Compose</span>
+                <span>REST APIs</span>
+                <span>Microservices</span>
+                <span>Python AI</span>
+              </div>
+              <div class="p-links">
+                <a href="https://github.com/SanthoshBussa" target="_blank" rel="noopener noreferrer" class="p-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                  <span>Architecture Docs</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-box">
+              <div class="p-box-top">
+                <span class="p-status">DATA STRUCTURES &amp; ALGORITHMS</span>
+                <span class="p-year">360+ Solved</span>
+              </div>
+              <h3 class="p-title">Enterprise DSA Pattern Suite</h3>
+              <p class="p-desc">
+                Comprehensive repository containing 360+ algorithmic solutions in Java across LeetCode, GeeksforGeeks, and 10 algorithmic patterns (Two Pointers, Sliding Window, Binary Trees, Graphs, Dynamic Programming). Clean modular code with explicit time and space complexities.
+              </p>
+              <div class="p-tags">
+                <span>Java 17</span>
+                <span>Algorithms</span>
+                <span>Data Structures</span>
+                <span>LeetCode</span>
+                <span>GeeksforGeeks</span>
+              </div>
+              <div class="p-links">
+                <a href="https://github.com/SanthoshBussa/DSA" target="_blank" rel="noopener noreferrer" class="p-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                  <span>Code Repository</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 6: CAREER TIMELINE & EDUCATION -->
+        <article class="bento-card card-timeline tilt-card" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              <span>Experience &amp; Education</span>
+            </div>
+            <span class="notice-badge">Notice: 15 Days or less</span>
+          </div>
+
+          <div class="timeline-stream">
+            <div class="timeline-step current">
+              <div class="t-marker"></div>
+              <div class="t-content">
+                <div class="t-role">Associate Software Engineer</div>
+                <div class="t-company">Test Yantra Software Solutions • Bengaluru, India</div>
+                <div class="t-period">March 2025 – Present (Full-time)</div>
+                <ul class="t-bullets">
+                  <li>Engineered and optimized 20+ RESTful APIs, cutting response times by 20% across business endpoints.</li>
+                  <li>Implemented robust JWT stateless authentication with Spring Security, mitigating unauthorized endpoint access.</li>
+                  <li>Conducted 300+ automated Postman test executions and actively drove peer code reviews to maintain clean code standards.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-step">
+              <div class="t-marker"></div>
+              <div class="t-content">
+                <div class="t-role">Master of Computer Applications (MCA)</div>
+                <div class="t-company">Aurora's PG College • Osmania University, Hyderabad</div>
+                <div class="t-period">Nov 2022 – Nov 2024 • CGPA: 7.10 / 10</div>
+                <p class="t-bullets-short">
+                  Core curriculum in Advanced Java, Relational Database Management Systems, Distributed Computing, and Algorithm Design.
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- BENTO CARD 7: DIRECT MESSAGING & CONNECT GATEWAY -->
+        <article class="bento-card card-contact tilt-card" id="contact-hub" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <div class="badge-pill accent-emerald">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>Instant Recruiter Gateway</span>
+            </div>
+            <span class="response-time-pill">⚡ Fast Response</span>
+          </div>
+
+          <div class="contact-grid">
+            <div class="contact-info-col">
+              <h3 class="contact-heading">Let's build something exceptional together</h3>
+              <p class="contact-sub">
+                Actively interviewing for Java Backend Developer, Spring Boot Microservices, and Full-Stack Engineering roles. Notice period is 15 days or less.
+              </p>
+
+              <div class="contact-links-list">
+                <a href="mailto:iamsanthoshbussa@gmail.com" class="c-link-row">
+                  <span class="c-icon">📧</span>
+                  <div class="c-text">
+                    <span class="c-label">Direct Email</span>
+                    <span class="c-val">iamsanthoshbussa@gmail.com</span>
+                  </div>
+                </a>
+
+                <a href="tel:+916305344901" class="c-link-row">
+                  <span class="c-icon">📱</span>
+                  <div class="c-text">
+                    <span class="c-label">Phone / WhatsApp</span>
+                    <span class="c-val">+91 6305344901</span>
+                  </div>
+                </a>
+
+                <a href="https://www.linkedin.com/in/santhosh-bussa" target="_blank" rel="noopener noreferrer" class="c-link-row">
+                  <span class="c-icon">🔗</span>
+                  <div class="c-text">
+                    <span class="c-label">LinkedIn Profile</span>
+                    <span class="c-val">linkedin.com/in/santhosh-bussa</span>
+                  </div>
+                </a>
+
+                <a href="https://github.com/SanthoshBussa" target="_blank" rel="noopener noreferrer" class="c-link-row">
+                  <span class="c-icon">🐙</span>
+                  <div class="c-text">
+                    <span class="c-label">GitHub Portfolio</span>
+                    <span class="c-val">github.com/SanthoshBussa</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="contact-form-col">
+              <form id="quickContactForm" class="quick-form">
+                <div class="form-row">
+                  <label for="visitorName">Your Name / Company</label>
+                  <input type="text" id="visitorName" placeholder="e.g. Sarah Miller (Tech Recruiter)" required />
+                </div>
+
+                <div class="form-row">
+                  <label for="visitorRole">Opportunity / Role Type</label>
+                  <input type="text" id="visitorRole" placeholder="e.g. Senior Java Backend Engineer" required />
+                </div>
+
+                <div class="form-row">
+                  <label for="visitorMessage">Direct Message</label>
+                  <textarea id="visitorMessage" rows="3" placeholder="Hi Santhosh, we reviewed your portfolio and would love to schedule a discussion..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn-send-whatsapp" id="btnSendWhatsApp">
+                    <span>Send via WhatsApp</span>
+                  </button>
+                  <button type="submit" class="btn-send-email">
+                    <span>Send via Email</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </article>
+
+      </section>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: DEVOS HACKER TERMINAL (INTERACTIVE CLI)          -->
+    <!-- ======================================================== -->
+    <div id="terminalView" class="view-panel">
+      <div class="terminal-window">
+        <!-- Terminal Title Bar -->
+        <div class="term-titlebar">
+          <div class="term-traffic-lights">
+            <span class="term-dot close" id="btnTermClose" title="Back to Bento GUI"></span>
+            <span class="term-dot minimize" title="Minimize"></span>
+            <span class="term-dot maximize" id="btnTermMaximize" title="Toggle Fullscreen"></span>
+          </div>
+          <div class="term-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            <span>santhosh@devbox: ~ (Interactive Bash Shell)</span>
+          </div>
+          <div class="term-actions">
+            <button type="button" class="term-btn-small" id="btnMatrixToggle" title="Toggle Digital Rain">MATRIX</button>
+            <button type="button" class="term-btn-small" id="btnTermClear">CLEAR</button>
+          </div>
+        </div>
+
+        <!-- Terminal Output Buffer -->
+        <div class="term-body" id="termOutputBody" tabindex="0" role="region" aria-live="polite">
+          <div class="term-banner">
+<pre class="ascii-art">
+   _____             __  __               __       ____                               
+  / ___/____ _____  / /_/ /_  ____  _____/ /_     / __ )__  ________________ _        
+  \__ \/ __ `/ __ \/ __/ __ \/ __ \/ ___/ __ \   / __  / / / / ___/ ___/ __ `/        
+ ___/ / /_/ / / / / /_/ / / / /_/ (__  ) / / /  / /_/ / /_/ (__  |__  ) /_/ /         
+/____/\__,_/_/ /_/\__/_/ /_/\____/____/_/ /_/  /_____/\__,_/____/____/\__,_/          
+                                                                                       
+</pre>
+            <div class="term-welcome">
+              Welcome to <strong>Santhosh Bussa DevOS v2.4</strong> [Java 17.0.12 • Spring Boot 3.3.4 • Linux x86_64]<br/>
+              Type <span class="term-hl">help</span> to list commands, <span class="term-hl">projects</span> to inspect codebase, or <span class="term-hl">sudo hire santhosh</span>.
+            </div>
+          </div>
+
+          <div id="termHistory"></div>
+
+          <!-- Command Input Line -->
+          <div class="term-prompt-line">
+            <span class="term-prompt"><span class="prompt-user">santhosh@devbox</span>:<span class="prompt-path">~</span>$ </span>
+            <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" autofocus aria-label="Terminal Input" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Celebratory Easter Egg Modal for 'sudo hire santhosh' -->
+  <div class="hire-modal-backdrop" id="hireModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="hire-modal-card">
+      <div class="hire-modal-icon">🎉</div>
+      <h2 id="modalTitle" class="hire-modal-title">Offer Accepted!</h2>
+      <p class="hire-modal-desc">
+        You've initiated the hiring pipeline for <strong>Santhosh Bussa</strong>.<br/>
+        With 1+ years enterprise Java experience, 20+ production APIs, and a 15-day notice period, Santhosh is ready to deliver impact immediately.
+      </p>
+      <div class="hire-modal-actions">
+        <a href="mailto:iamsanthoshbussa@gmail.com?subject=Job%20Offer%20-%20Java%20Backend%20Developer&body=Hi%20Santhosh,%20we%20would%20love%20to%20extend%20an%20offer%20or%20schedule%20an%20interview%20with%20our%20engineering%20team." class="btn-modal-action primary">
+          <span>Send Interview Invitation</span>
+        </a>
+        <a href="https://wa.me/916305344901?text=Hi%20Santhosh,%20we%20reviewed%20your%20portfolio%20and%20want%20to%20connect%20regarding%20a%20developer%20role!" target="_blank" rel="noopener noreferrer" class="btn-modal-action whatsapp">
+          <span>WhatsApp Message</span>
+        </a>
+        <button type="button" class="btn-modal-action ghost" id="btnCloseHireModal">
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="page-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span>&copy; 2026 Santhosh Bussa. Engineered with Java, Spring Boot &amp; Modern Web Standards.</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/santhosh-bussa" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://github.com/SanthoshBussa" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="Santhosh_Resume.pdf" download="Santhosh_Resume.pdf">PDF Resume</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
